@@ -1,13 +1,29 @@
+from colorama import Fore, Back, Style, init
+
 class Board:
-    def __init__(self, numShips): #init changes to the way the grid is setup and the hits to calculate endgame.
+    def __init__(self, numShips):  # init changes to the way the grid is setup and the hits to calculate endgame.
+        init(autoreset=True)
         self.size = 10
         self.numShips = numShips
         self.grid = [['.' for _ in range(self.size)] for _ in range(self.size)]
         self.hits = 0
-        self.placements = {} # Stores user ship placements to track existing ships
+        self.placements = {}  # Stores user ship placements to track existing ships
 
-    def buildBoard(self): #Not needed anymore
-        pass
+    def showBoard(self):
+        """Prints the board with emojis and colored backgrounds for different states."""
+        print(Style.BRIGHT + '    ' + '   '.join([Fore.YELLOW + chr(65 + i) for i in range(self.size)]))  # Column headers
+        for idx, row in enumerate(self.grid):
+            print(Fore.YELLOW + f"{idx+1:<2} ", end='')  # Row numbers with proper alignment
+            for cell in row:
+                if cell == 'S':  # Assuming 'S' represents a ship
+                    print(Back.BLACK + '⬛', end='  ')  # BLACK emoji for ships
+                elif cell == 'H':  # Assuming 'H' represents a hit
+                    print(Back.RED + '🟥', end='  ')  # Red emoji for hits
+                elif cell == '.':
+                    print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
+                else:
+                    print(Back.WHITE + '⬜', end='  ')  # White square for misses
+            print()  # Newline for the next row
     
     def ship_placement(self, let_to_num): #New setup for ship placement to use horizontal or vertical. Also incorporates what was previously in buildBoard. Tried to make output look cleaner.
         ship_num = 1
@@ -56,13 +72,6 @@ class Board:
             self.storeShipLocation(row_num, column_number, ship_num, orientation) # stores ship location for hitShip() function
             self.showBoard()  #Show the new board
             ship_num += 1
-
-    def showBoard(self): #Small showBoard updates to make it look nicer
-        print("\n**** Board ****")
-        print("  A B C D E F G H I J")
-        for idx, row in enumerate(self.grid):
-            display_row = [str(cell) for cell in row]
-            print(f"{idx + 1:2} " + " ".join(display_row))
 
     def take_shot(self, row, col): #Updates the board for hits and misses
         if self.grid[row][col] == 'S': #Ships
@@ -117,4 +126,3 @@ class Board:
             elif orientation == 'V':
                 coordinates.append((start_row + i, start_col))
         return coordinates
-
