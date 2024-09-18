@@ -7,6 +7,15 @@
 #Newest Commit: 09-15-2024
 
 from colorama import Fore, Back, Style, init
+import os
+
+def clearScreen():
+    if os.name == 'nt':
+        _ = os.system('cls')
+    else:
+        _ = os.system('clear')
+    return
+
 
 class Board:
     def __init__(self, numShips):  #Sets up the grid, and stores hits. Also updates ship placements
@@ -14,8 +23,9 @@ class Board:
         self.size = 10
         self.numShips = numShips
         self.grid = [['.' for _ in range(self.size)] for _ in range(self.size)]
+        self.shotGrid = [['.' for _ in range(self.size)] for _ in range(self.size)]
         self.hits = 0
-        self.placements = {}  #Stores user ship placements to track existing ships
+        self.placements = {}  #Stores user ship placements to track existing ships\
 
     def showBoard(self):
         """Prints the board with emojis and colored backgrounds for different states."""
@@ -26,6 +36,21 @@ class Board:
                 if cell == 'S':  # Assuming 'S' represents a ship
                     print(Back.BLACK + '⬛', end='  ')  # BLACK emoji for ships
                 elif cell == 'H':  # Assuming 'H' represents a hit
+                    print(Back.RED + '🟥', end='  ')  # Red emoji for hits
+                elif cell == '.':
+                    print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
+                else:
+                    print(Back.WHITE + '⬜', end='  ')  # White square for misses
+            print()  # Newline for the next row
+
+
+    def showShotBoard(self):
+        """Prints the shot board with emojis and colored backgrounds for different states."""
+        print(Style.BRIGHT + '    ' + '   '.join([Fore.YELLOW + chr(65 + i) for i in range(self.size)]))  # Column headers
+        for idx, row in enumerate(self.shotGrid):
+            print(Fore.YELLOW + f"{idx+1:<2} ", end='')  # Row numbers with proper alignment
+            for cell in row:
+                if cell == 'H':  # Assuming 'H' represents a hit
                     print(Back.RED + '🟥', end='  ')  # Red emoji for hits
                 elif cell == '.':
                     print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
@@ -79,6 +104,7 @@ class Board:
                     print("Invalid input. Please try again.")
 
             self.storeShipLocation(row_num, column_number, ship_num, orientation) #Stores ship location for hitShip() function
+            clearScreen()
             self.showBoard()  #Show the new board
             ship_num += 1
 
@@ -86,11 +112,15 @@ class Board:
         if self.grid[row][col] == 'S': #Ships
             print("Hit!")
             self.grid[row][col] = 'H' #Hits
+            self.shotGrid[row][col] = 'H'
             self.hits += 1
             self.hitShip(row, col) #Updates the health of the ship that was hit and if ship health is zero announces it
+            return True
         elif self.grid[row][col] == '.': #Empty
             print("Miss!")
-            self.grid[row][col] = 'M'  #Misses
+            self.grid[row][col] = 'M'
+            self.shotGrid[row][col] = 'M'  #Misses
+            return False
         else:
             print("Already targeted this spot. Try again.")
 
@@ -135,3 +165,4 @@ class Board:
             elif orientation == 'V':
                 coordinates.append((start_row + i, start_col))
         return coordinates
+    

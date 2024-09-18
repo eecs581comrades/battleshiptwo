@@ -7,7 +7,8 @@
 #Newest Commit: 09-15-2024
 
 
-from board import Board
+from board import Board, clearScreen
+
 #Dictionary can be used as a global var to map chars to ints
 let_to_num = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
 
@@ -30,6 +31,7 @@ def get_shot():
         except ValueError:
             print("Invalid input. Please try again.")
 
+
 #Main function of our program, handles the game setup, as well as the gameplay between each user
 def main():
 
@@ -40,41 +42,57 @@ def main():
         numShips = int(input("Enter the number of ships per player (1 to 5): "))
     board1 = Board(numShips) #Create board
     board2 = Board(numShips) #Create board
+    clearScreen()
     print("Player 1's Board:")
     board1.showBoard() #Prints board
-    print("\nPlayer 2's Board:")
-    board2.showBoard() #Prints board
     print("\nPlayer 1, place your ships:")
     board1.ship_placement(let_to_num) #Initializes ship placement and places where according to user
+    clearScreen()
+    print("\nPlayer 2's Board:")
+    board2.showBoard() #Prints board
     print("\nPlayer 2, place your ships:")
     board2.ship_placement(let_to_num) #Initializes ship placement and places where according to user
+    clearScreen()
 
-    player_turn = 1 #Gameplay setup in main. Changes to get target from each player then outputs the board they shot at. Endgame check if all spots are hit.
-    while True:
-        if player_turn == 1:
-            print("\nPlayer 1, take your shot!")
-            row, col = get_shot() #Gets the shot
-            board2.take_shot(row, col) #Takes the shot
-            board2.showBoard() #Shows board after result
+    def printBoard(player, board, oppoboard):
+        clearScreen()
+        print("Opponent's Board")
+        oppoboard.showShotBoard()
+        print("------")
+        print("Your Board")
+        board.showBoard()
+        print(f"\nPlayer {player}, take your shot!")
 
-            #Endgame check
-            if board2.has_lost():
-                print("Player 1 wins!")
-                break
-
-            player_turn = 2
+    def checkEnd(hit):
+        if board1.has_lost():
+            print("Player 1 wins!")
+            return True
+        elif board2.has_lost():
+            print("Player 2 wins!")
+            return True
+        elif hit:
+            print("Hit! Well done")
+            return False
         else:
-            print("\nPlayer 2, take your shot!")
-            row, col = get_shot() #Gets the shot
-            board1.take_shot(row, col) #Takes the shot
-            board1.showBoard() #Shows board after result
-
-            #Endgame check
-            if board1.has_lost():
-                print("Player 2 wins!")
-                break
-
-            player_turn = 1
+            print("Miss! Boo!")
+            return False
+    
+    while (True):
+        printBoard(1, board1, board2)
+        row, col = get_shot() #Gets the shot
+        hit = board2.take_shot(row, col) #Takes the shot
+        clearScreen()
+        if (checkEnd(hit)):
+            break
+        _ = input("Click Enter when Player 2 has the computer!")
+        printBoard(2, board2, board1)
+        row, col = get_shot() #Gets the shot
+        board1.take_shot(row, col) #Takes the shot
+        clearScreen()
+        if (checkEnd(hit)):
+            break
+        _ = input("Click Enter when Player 1 has the computer!")
+        clearScreen()
 
 if __name__ == "__main__":
     main()
