@@ -111,6 +111,7 @@ class Board:
     def autoPlaceShips(self):
         ### TO BE IMPLEMENTED
         # FOR CPU: AUTO PLACE SHIPS
+
         pass
 
     def take_shot(self, row, col): #Updates the board for hits and misses
@@ -132,9 +133,9 @@ class Board:
     def cpuTakeShot(self, dif):
         ### TO BE IMPLEMENTED
         # FOR CPU: SHOOTS SHIPS DEPENDING ON DIFFICULTY
-        if dif = 'easy'
+        if (dif == 'easy'):
             pass
-        elif dif = 'medium'
+        elif (dif == 'medium'):
             pass
         else:
             pass
