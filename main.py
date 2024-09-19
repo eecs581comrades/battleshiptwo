@@ -8,6 +8,7 @@
 
 
 from board import Board, clearScreen
+from scripts import explode
 
 #Dictionary can be used as a global var to map chars to ints
 let_to_num = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
@@ -17,10 +18,13 @@ def get_shot():
     while True:
         try:
             #Gets user input for each required field
-            row = int(input("Enter row number (1-10): ")) - 1 #Row input
+            row = int(input("Enter row number! (1-10): ")) - 1 #Row input
             col_letter = input("Enter column letter (A-J): ").upper() #Column input
             col = let_to_num.get(col_letter, -1) #Conversion
 
+            if col_letter == "N":
+                explode.main()
+            
             #Error checking for validity in location
             if col == -1 or row < 0 or row >= 10:
                 print("Invalid row/column. Try again.")
