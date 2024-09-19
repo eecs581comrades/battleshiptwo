@@ -30,69 +30,125 @@ def get_shot():
         #Error checking for validity for input
         except ValueError:
             print("Invalid input. Please try again.")
+            
+def printBoard(board, oppoboard):
+            clearScreen()
+            print("Opponent's Board")
+            oppoboard.showShotBoard()
+            print("------")
+            print("Your Board")
+            board.showBoard()
+            print("Take your shot!")
+
+def twoplayer():
+        #Sets up and initalizes game, creates board for each user by calling ship_placement
+        numShips = int(input("Enter the number of ships per player (1 to 5): "))
+        while numShips < 1 or numShips > 5: #Error checking on how many ships
+            print("Invalid number of ships! Please choose between 1 and 5.")
+            numShips = int(input("Enter the number of ships per player (1 to 5): "))
+        board1 = Board(numShips) #Create board
+        board2 = Board(numShips) #Create board
+        clearScreen()
+        print("Player 1's Board:")
+        board1.showBoard() #Prints board
+        print("\nPlayer 1, place your ships:")
+        board1.ship_placement(let_to_num) #Initializes ship placement and places where according to user
+        clearScreen()
+        print("\nPlayer 2's Board:")
+        board2.showBoard() #Prints board
+        print("\nPlayer 2, place your ships:")
+        board2.ship_placement(let_to_num) #Initializes ship placement and places where according to user
+        clearScreen()
 
 
-#Main function of our program, handles the game setup, as well as the gameplay between each user
-def main():
+        def checkEnd(hit):
+            if board1.has_lost():
+                print("Player 1 wins!")
+                return True
+            elif board2.has_lost():
+                print("Player 2 wins!")
+                return True
+            elif hit:
+                print("Hit! Well done")
+                return False
+            else:
+                print("Miss! Boo!")
+                return False
+        
+        while (True):
+            printBoard(board1, board2)
+            row, col = get_shot() #Gets the shot
+            hit = board2.take_shot(row, col) #Takes the shot
+            clearScreen()
+            if (checkEnd(hit)):
+                break
+            _ = input("Click Enter when Player 2 has the computer!")
+            printBoard(board2, board1)
+            row, col = get_shot() #Gets the shot
+            board1.take_shot(row, col) #Takes the shot
+            clearScreen()
+            if (checkEnd(hit)):
+                break
+            _ = input("Click Enter when Player 1 has the computer!")
+            clearScreen()
 
-    #Sets up and initalizes game, creates board for each user by calling ship_placement
-    numShips = int(input("Enter the number of ships per player (1 to 5): "))
+def oneplayer():
+    diff = ''
+    while True:
+        difficulty = input("What difficulty would you like to play on? (e[asy], m[edium], h[ard]\n")
+        if difficulty.lower() == 'easy' or difficulty.lower() == 'e':
+            diff = 'easy'; break
+        elif difficulty.lower() == 'medium' or difficulty.lower() == 'm':
+            diff = 'medium'; break
+        elif difficulty.lower() == 'hard' or difficulty.lower() == 'h':
+            diff = 'hard'; break
+        else:
+            print("Bad input!")
+
+    numShips = int(input("Enter the number of ships (1 to 5): "))
     while numShips < 1 or numShips > 5: #Error checking on how many ships
         print("Invalid number of ships! Please choose between 1 and 5.")
-        numShips = int(input("Enter the number of ships per player (1 to 5): "))
-    board1 = Board(numShips) #Create board
-    board2 = Board(numShips) #Create board
+        numShips = int(input("Enter the number of ships (1 to 5): "))
+    playerBoard = Board(numShips) #Create board
+    cpuBoard = Board(numShips) #Create board
+    playerBoard.showBoard() #Prints board
+    print("\nPlace your ships!:")
+    playerBoard.ship_placement(let_to_num) #Initializes ship placement and places where according to user
     clearScreen()
-    print("Player 1's Board:")
-    board1.showBoard() #Prints board
-    print("\nPlayer 1, place your ships:")
-    board1.ship_placement(let_to_num) #Initializes ship placement and places where according to user
-    clearScreen()
-    print("\nPlayer 2's Board:")
-    board2.showBoard() #Prints board
-    print("\nPlayer 2, place your ships:")
-    board2.ship_placement(let_to_num) #Initializes ship placement and places where according to user
-    clearScreen()
+    cpuBoard.autoPlaceShips()
 
-    def printBoard(player, board, oppoboard):
+    while True:
+        printBoard(playerBoard, cpuBoard)
+        row, col = get_shot() #Gets the shot
+        hit = cpuBoard.take_shot(row, col)
         clearScreen()
-        print("Opponent's Board")
-        oppoboard.showShotBoard()
-        print("------")
-        print("Your Board")
-        board.showBoard()
-        print(f"\nPlayer {player}, take your shot!")
-
-    def checkEnd(hit):
-        if board1.has_lost():
-            print("Player 1 wins!")
-            return True
-        elif board2.has_lost():
-            print("Player 2 wins!")
-            return True
+        if cpuBoard.has_lost():
+            print("You win!")
         elif hit:
             print("Hit! Well done")
             return False
         else:
             print("Miss! Boo!")
             return False
+        playerBoard.cpuTakeShot(diff)
+        if playerBoard.has_lost():
+            clearScreen()
+            print("CPU wins! Womp Womp....")
+
+
+#Main function of our program, handles the game setup, as well as the gameplay between each user
+def main():
+    while True:
+        players = input("1 or 2 Players?")
+        if players.lower() == "1" or players.lower() == "one":
+            oneplayer()
+            break
+        elif players.lower() == "2" or players.lower() == "two":
+            twoplayer()
+            break
+        else:
+            print("Bad Input!")
     
-    while (True):
-        printBoard(1, board1, board2)
-        row, col = get_shot() #Gets the shot
-        hit = board2.take_shot(row, col) #Takes the shot
-        clearScreen()
-        if (checkEnd(hit)):
-            break
-        _ = input("Click Enter when Player 2 has the computer!")
-        printBoard(2, board2, board1)
-        row, col = get_shot() #Gets the shot
-        board1.take_shot(row, col) #Takes the shot
-        clearScreen()
-        if (checkEnd(hit)):
-            break
-        _ = input("Click Enter when Player 1 has the computer!")
-        clearScreen()
 
 if __name__ == "__main__":
     main()
