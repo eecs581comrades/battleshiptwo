@@ -1,13 +1,15 @@
 #Battleship Main File
 #This file contains the board game initialization, hit mechanics, and board displays for the game battleship
 #No inputs or outputs
-#Authors: Aiden Murphy, Jack Doughty, Jack Pigott, Vy Luu, Daniel Bobadilla
-#Supplemental help from ChatGPT and StackOverflow
+#Proj 1 Authors: Aiden Murphy, Jack Doughty, Jack Pigott, Vy Luu, Daniel Bobadilla
+#Proj 2 Authors: Chase Curtis, Emily Tso, Katie Golder, Matthew Petillo, Wil Johnson
+#Proj 1 Supplemental help from ChatGPT and StackOverflow
 #Creation Date: 09-13-2024
-#Newest Commit: 09-15-2024
+#Project 2 Team Takeover: 09-18-2024
 
 from colorama import Fore, Back, Style, init
 import os
+import random
 
 def clearScreen():
     if os.name == 'nt':
@@ -112,11 +114,57 @@ class Board:
             self.showBoard()  #Show the new board
             ship_num += 1
 
-    def autoPlaceShips(self):
-        ### TO BE IMPLEMENTED
+    def autoPlaceShips(self):#Katie adapted from ship_placement
         # FOR CPU: AUTO PLACE SHIPS
+        ship_num = 1
+        for i in range(self.numShips): #Depending on how many ships
+            #print(f"**** Ship #{ship_num} (1 x {ship_num}) ****") #Output for each ship
+            while True:
+                try:
+                    row_num = random.randint(1,10)
+                    #column_letter = input("Enter column letter (A-J): ").upper() #Column input from user
+                    column_number = random.randint(1,10)
+                    if column_number == -1 or row_num < 0 or row_num >= self.size: #Validity checks
+                        print("Invalid row/column. Try again.")
+                        continue 
+                    orientation = random.randint(0,1) #Direction for ship placement
+                    
+                    if orientation == 0: #Ship setup checks
+                        if column_number + ship_num > self.size: #Size Check
+                            print("Ship does not fit horizontally. Try again.")
+                            continue
+                        if any(self.grid[row_num][column_number + j] != '.' for j in range(ship_num)): #Overlap check
+                            print("Ships cannot overlap. Try again.") #Overlap check
+                            continue
 
-        pass
+                        for j in range(ship_num): #Placement of the ship!
+                            self.grid[row_num][column_number + j] = 'S'#Placement of the ship!
+
+                    elif orientation == 1: #Ship setup checks
+                        if row_num + ship_num > self.size: #Size Check
+                            print("Ship does not fit vertically. Try again.")
+                            continue
+                        if any(self.grid[row_num + j][column_number] != '.' for j in range(ship_num)): #Overlap check
+                            print("Ships cannot overlap. Try again.") #Overlap check
+                            continue
+
+                        for j in range(ship_num): #Placement of the ship!
+                            self.grid[row_num + j][column_number] = 'S' #Placement of the ship!
+                    else:
+                        print("Invalid orientation. Please enter H or V.") 
+                        continue
+                    
+                    break
+
+                except ValueError: #Invalid inputs
+                    #print("Invalid input. Please try again.")
+                    continue
+
+            self.storeShipLocation(row_num, column_number, ship_num, orientation) #Stores ship location for hitShip() function
+            clearScreen()
+            self.showBoard()  #Show the new board
+            ship_num += 1
+        
 
     def take_shot(self, row, col): #Updates the board for hits and misses
         if self.grid[row][col] == 'S': #Ships
