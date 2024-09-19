@@ -108,6 +108,11 @@ class Board:
             self.showBoard()  #Show the new board
             ship_num += 1
 
+    def autoPlaceShips(self):
+        ### TO BE IMPLEMENTED
+        # FOR CPU: AUTO PLACE SHIPS
+        pass
+
     def take_shot(self, row, col): #Updates the board for hits and misses
         if self.grid[row][col] == 'S': #Ships
             print("Hit!")
@@ -123,6 +128,11 @@ class Board:
             return False
         else:
             print("Already targeted this spot. Try again.")
+    
+    def cpuTakeShot(self, dif):
+        ### TO BE IMPLEMENTED
+        # FOR CPU: SHOOTS SHIPS DEPENDING ON DIFFICULTY
+        pass
 
     def has_lost(self): #Endgame check
         total_ship_cells = sum(range(1, self.numShips + 1)) #returns ship cell total
