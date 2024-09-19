@@ -64,7 +64,6 @@ def twoplayer():
         board2.ship_placement(let_to_num) #Initializes ship placement and places where according to user
         clearScreen()
 
-
         def checkEnd(hit):
             if board1.has_lost():
                 print("Player 1 wins!")
@@ -89,7 +88,7 @@ def twoplayer():
             _ = input("Click Enter when Player 2 has the computer!")
             printBoard(board2, board1)
             row, col = get_shot() #Gets the shot
-            board1.take_shot(row, col) #Takes the shot
+            hit = board1.take_shot(row, col) #Takes the shot
             clearScreen()
             if (checkEnd(hit)):
                 break
