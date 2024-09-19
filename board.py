@@ -36,7 +36,9 @@ class Board:
                 if cell == 'S':  # Assuming 'S' represents a ship
                     print(Back.BLACK + '⬛', end='  ')  # BLACK emoji for ships
                 elif cell == 'H':  # Assuming 'H' represents a hit
-                    print(Back.RED + '🟥', end='  ')  # Red emoji for hits
+                    print(Back.YELLOW + '🟨', end='  ')  # Yellow emoji for hits
+                elif cell == 'D':
+                    print(Back.RED + '🟥', end='  ') # RED emoji for dead ship
                 elif cell == '.':
                     print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
                 else:
@@ -51,7 +53,9 @@ class Board:
             print(Fore.YELLOW + f"{idx+1:<2} ", end='')  # Row numbers with proper alignment
             for cell in row:
                 if cell == 'H':  # Assuming 'H' represents a hit
-                    print(Back.RED + '🟥', end='  ')  # Red emoji for hits
+                    print(Back.YELLOW + '🟨', end='  ')  # Red emoji for hits
+                elif cell == 'D':
+                    print(Back.RED + '🟥', end='  ')
                 elif cell == '.':
                     print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
                 else:
@@ -162,6 +166,9 @@ class Board:
                 ship_data['Ship Health'] -= 1 # If there is a match it reduces the ships health by 1
                 if ship_data['Ship Health'] == 0: # If statement checks if the ship no longer has any health
                     print(f"Ship has sunk!") # If the ship has zero health announces that the ship has sunk
+                    for row, col in ship_coordinates:
+                        self.grid[row][col] = 'D'
+                        self.shotGrid[row][col] = 'D'
                 return
     
     # This function is authored by Team Member: Daniel Bobadilla & ChatGPT
