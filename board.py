@@ -2,7 +2,7 @@
 #This file contains the board game initialization, hit mechanics, and board displays for the game battleship
 #No inputs or outputs
 #Proj 1 Authors: Aiden Murphy, Jack Doughty, Jack Pigott, Vy Luu, Daniel Bobadilla
-#Proj 2 Authors: Katie Golder
+#Proj 2 Authors: Chase Curtis, Emily Tso, Katie Golder, Matthew Petillo, Wil Johnson
 #Proj 1 Supplemental help from ChatGPT and StackOverflow
 #Creation Date: 09-13-2024
 #Project 2 Team Takeover: 09-18-2024
