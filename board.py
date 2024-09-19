@@ -132,7 +132,12 @@ class Board:
     def cpuTakeShot(self, dif):
         ### TO BE IMPLEMENTED
         # FOR CPU: SHOOTS SHIPS DEPENDING ON DIFFICULTY
-        pass
+        if dif = 'easy'
+            pass
+        elif dif = 'medium'
+            pass
+        else:
+            pass
 
     def has_lost(self): #Endgame check
         total_ship_cells = sum(range(1, self.numShips + 1)) #returns ship cell total
