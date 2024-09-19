@@ -127,16 +127,17 @@ def oneplayer():
         clearScreen()
         if cpuBoard.has_lost():
             print("You win!")
+            return
         elif hit:
             print("Hit! Well done")
-            return False
         else:
             print("Miss! Boo!")
-            return False
-        playerBoard.cpuTakeShot(diff)
+        cpuFire = playerBoard.cpuTakeShot(diff)
+        hit = playerBoard.take_shot(cpuFire[0],cpuFire[1])
         if playerBoard.has_lost():
             clearScreen()
             print("CPU wins! Womp Womp....")
+            return
 
 
 #Main function of our program, handles the game setup, as well as the gameplay between each user

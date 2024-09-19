@@ -121,15 +121,18 @@ class Board:
             #print(f"**** Ship #{ship_num} (1 x {ship_num}) ****") #Output for each ship
             while True:
                 try:
-                    row_num = random.randint(1,10)
+                    row_num = random.randint(0,9)
                     #column_letter = input("Enter column letter (A-J): ").upper() #Column input from user
-                    column_number = random.randint(1,10)
+                    column_number = random.randint(0,9)
                     if column_number == -1 or row_num < 0 or row_num >= self.size: #Validity checks
                         print("Invalid row/column. Try again.")
                         continue 
-                    orientation = random.randint(0,1) #Direction for ship placement
+                    #orientation = input("Enter orientation (H for Horizontal, V for Vertical): ").upper() #Direction for ship placement
+                    orientation = random.randint(0,1)
                     
                     if orientation == 0: #Ship setup checks
+                        print(row_num)
+                        print(column_number)
                         if column_number + ship_num > self.size: #Size Check
                             print("Ship does not fit horizontally. Try again.")
                             continue
@@ -141,6 +144,8 @@ class Board:
                             self.grid[row_num][column_number + j] = 'S'#Placement of the ship!
 
                     elif orientation == 1: #Ship setup checks
+                        print(row_num)
+                        print(column_number)
                         if row_num + ship_num > self.size: #Size Check
                             print("Ship does not fit vertically. Try again.")
                             continue
@@ -190,8 +195,20 @@ class Board:
         elif (dif == 'medium'):
             pass
         else:
-            pass
-
+            for ship_num, ship_data in self.placements.items(): # Iterates keys and items in class stored ship locations
+                ship_coordinates = self.get_ship_coordinates(ship_num) # Stores a list of coordinates for a single ship
+                for (row, col) in ship_coordinates: # checks if the shot from the opponent matches any of the coordinates from the ships coordinates
+                    if ship_data['Ship Health'] != 0: # If statement checks if the ship no longer has any health
+                        print (self.shotGrid[row][col])
+                        if (self.shotGrid[row][col] == '.'):  
+                            print(row)
+                            print(col)
+                            return ((row, col))
+                        else:
+                            print ("try next spot")
+                    else:
+                        print("error no ships found")
+                    
     def has_lost(self): #Endgame check
         total_ship_cells = sum(range(1, self.numShips + 1)) #returns ship cell total
         return self.hits == total_ship_cells #Compares to see if game is over
