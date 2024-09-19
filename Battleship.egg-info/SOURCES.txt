@@ -1,0 +1,8 @@
+setup.py
+Battleship.egg-info/PKG-INFO
+Battleship.egg-info/SOURCES.txt
+Battleship.egg-info/dependency_links.txt
+Battleship.egg-info/requires.txt
+Battleship.egg-info/top_level.txt
+scripts/explode.py
+scripts/shatter_explode.py
