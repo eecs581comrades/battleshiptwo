@@ -11,13 +11,13 @@ def get_bsod_image():
 
     # Return the appropriate BSOD image path based on the OS
     if system_name == "Windows":
-        return "./bsod.png"
+        return "./scripts/bsod.png"
     else:
-        return "./otherbsod.png"
+        return "./scripts/otherbsod.png"
 
 def play_explosion_sound():
     # Play explosion sound effect
-    explosion_sound = pygame.mixer.Sound("./explosion.mp3")
+    explosion_sound = pygame.mixer.Sound("./scripts/explosion.mp3")
     explosion_sound.play()
 
 def shutdown_system():
@@ -123,4 +123,4 @@ def shatter_and_explode(image_path):
 
 
 if __name__ == "__main__":
-    shatter_and_explode("fullscreen_screenshot.png")
+    shatter_and_explode("./fullscreen_screenshot.png")
