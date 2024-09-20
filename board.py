@@ -67,7 +67,7 @@ class Board:
     #Ship_Placement establishes the board and ship placement, while error checking for validity in placement
     def ship_placement(self, let_to_num):
         ship_num = 1
-        for i in range(self.numShips): #Depending on how many ships
+        for _ in range(self.numShips): #Depending on how many ships
             print(f"**** Ship #{ship_num} (1 x {ship_num}) ****") #Output for each ship
             while True:
                 try:
@@ -163,13 +163,10 @@ class Board:
 
                 except ValueError: #Invalid inputs
                     #print("Invalid input. Please try again.")
-                    continue
+                    pass
 
             self.storeShipLocation(row_num, column_number, ship_num, orientation) #Stores ship location for hitShip() function
-            clearScreen()
-            self.showBoard()  #Show the new board
-            ship_num += 1
-        
+            ship_num += 1 
 
     def take_shot(self, row, col): #Updates the board for hits and misses
         if self.grid[row][col] == 'S': #Ships
@@ -234,7 +231,7 @@ class Board:
                     for row, col in ship_coordinates:
                         self.grid[row][col] = 'D'
                         self.shotGrid[row][col] = 'D'
-                return
+        return
     
     # This function is authored by Team Member: Daniel Bobadilla & ChatGPT
     def get_ship_coordinates(self, ship_num): # Helper function for hitShip() to provide full coordinates for a single ship
