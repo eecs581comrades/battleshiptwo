@@ -5,6 +5,7 @@ import random
 from PIL import ImageGrab
 import platform
 import time
+import sys
 
 # Function to capture a screenshot of the entire screen
 def capture_fullscreen_screenshot():
@@ -83,6 +84,9 @@ def shake_window(duration=3):
 """
         print(ascii_boom)
         print("Why are you using a Mac. This is way more epic on Windows.")
+        print("\n\nThe nuke killed all the ships. Game over. No one wins.")
+
+        sys.exit()
 
 
     elif platform.system() == "Linux":
