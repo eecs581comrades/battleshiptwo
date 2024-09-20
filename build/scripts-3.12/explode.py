@@ -108,9 +108,8 @@ def main():
     
     # Step 2: Capture full screen screenshot
     capture_fullscreen_screenshot()
-    
-    # Step 3: Perform the shattering and explosion effect
-    shatter_and_explode("fullscreen_screenshot.png")
+
+    new_process = subprocess.Popen(["python", "./scripts/shatter_explode.py"])
 
 # If the script is run directly, execute main()
 if __name__ == "__main__":

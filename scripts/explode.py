@@ -72,21 +72,18 @@ def shake_window(duration=3):
             time.sleep(0.05)
 
     elif platform.system() == "Darwin":
-        end_time = time.time() + duration
-        while time.time() < end_time:
-            # Generate random offsets for the shaking effect
-            x_offset = random.randint(-50, 50)
-            y_offset = random.randint(-50, 50)
+        os.system('clear')
+        ascii_boom = """
+        
+ ____  _____  _____  __  __       
+(  _ \(  _  )(  _  )(  \/  )      
+ ) _ < )(_)(  )(_)(  )    (       
+(____/(_____)(_____)(_/\/\_)()()()
 
-            # AppleScript to move the frontmost window
-            script = f'''
-            tell application "System Events"
-                set frontApp to name of first application process whose frontmost is true
-                tell application frontApp to set position of front window to {{100 + {x_offset}, 100 + {y_offset}}}
-            end tell
-            '''
-            os.system(f'osascript -e \'{script}\'')
-            time.sleep(0.05)
+"""
+        print(ascii_boom)
+        print("Why are you using a Mac. This is way more epic on Windows.")
+
 
     elif platform.system() == "Linux":
         from Xlib import X, display
