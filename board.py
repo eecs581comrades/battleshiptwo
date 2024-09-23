@@ -191,7 +191,11 @@ class Board:
         ### TO BE IMPLEMENTED
         # FOR CPU: SHOOTS SHIPS DEPENDING ON DIFFICULTY
         if (dif == 'easy'):
-            pass
+            while True:
+                row = random.randint(0, self.size - 1) #random row
+                col = random.randint(0, self.size - 1) #random col
+                if self.shotGrid[row][col] == '.':
+                    return (row, col)
         elif (dif == 'medium'):
             pass
         else:
