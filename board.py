@@ -128,9 +128,10 @@ class Board:
                         print("Invalid row/column. Try again.")
                         continue 
                     #orientation = input("Enter orientation (H for Horizontal, V for Vertical): ").upper() #Direction for ship placement
-                    orientation = random.randint(0,1)
+                    orientation_choice = random.randint(0,1)
+                    orientation = "H" if orientation_choice == 0 else "V"
                     
-                    if orientation == 0: #Ship setup checks
+                    if orientation == "H": #Ship setup checks
                         print(row_num)
                         print(column_number)
                         if column_number + ship_num > self.size: #Size Check
@@ -143,7 +144,7 @@ class Board:
                         for j in range(ship_num): #Placement of the ship!
                             self.grid[row_num][column_number + j] = 'S'#Placement of the ship!
 
-                    elif orientation == 1: #Ship setup checks
+                    elif orientation == "V": #Ship setup checks
                         print(row_num)
                         print(column_number)
                         if row_num + ship_num > self.size: #Size Check
