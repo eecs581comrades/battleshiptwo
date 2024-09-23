@@ -1,4 +1,3 @@
 Metadata-Version: 2.1
 Name: Battleship
 Version: 2.0.0
-Requires-Dist: pygame

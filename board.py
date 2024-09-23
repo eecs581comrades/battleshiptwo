@@ -28,6 +28,11 @@ class Board:
         self.shotGrid = [['.' for _ in range(self.size)] for _ in range(self.size)]
         self.hits = 0
         self.placements = {}  #Stores user ship placements to track existing ships\
+        self.cpuNextShot = None
+        self.cpuLastShot = None
+        self.cpuShotHit = None
+        self.cpuTry = 0
+        self.cpuHit = False
 
     def showBoard(self):
         """Prints the board with emojis and colored backgrounds for different states."""
@@ -177,12 +182,15 @@ class Board:
             self.grid[row][col] = 'H' #Hits
             self.shotGrid[row][col] = 'H'
             self.hits += 1
+            self.cpuHit = True
             self.hitShip(row, col) #Updates the health of the ship that was hit and if ship health is zero announces it
             return True
         elif self.grid[row][col] == '.': #Empty
             print("Miss!")
             self.grid[row][col] = 'M'
             self.shotGrid[row][col] = 'M'  #Misses
+            if self.cpuShotHit != None:
+                self.cpuTry += 1
             return False
         else:
             print("Already targeted this spot. Try again.")
@@ -191,9 +199,61 @@ class Board:
         ### TO BE IMPLEMENTED
         # FOR CPU: SHOOTS SHIPS DEPENDING ON DIFFICULTY
         if (dif == 'easy'):
-            pass
+            while True:
+                row = random.randint(0,9)
+                col = random.randint(0,9)
+                if self.shotGrid[row][col] == '.':
+                    return (row, col)
+                else:
+                    continue
         elif (dif == 'medium'):
-            pass
+            while True:
+                if self.cpuNextShot == None and self.cpuHit == False:
+                    self.cpuLastShot = (random.randint(0,9), random.randint(0,9))
+                    if self.shotGrid[self.cpuLastShot[0]][self.cpuLastShot[1]] == '.':
+                        return self.cpuLastShot
+                    else:
+                        continue
+                elif self.cpuNextShot == None and self.cpuHit == True:
+                    self.cpuShotHit = self.cpuLastShot
+                    self.cpuHit = False
+                    self.cpuNextShot = (self.cpuLastShot[0] + 1, self.cpuLastShot[1])
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.':
+                        return self.cpuNextShot
+                    else:
+                        continue
+                elif self.cpuNextShot != None and self.cpuHit == True:
+                    if self.cpuTry == 0:
+                        self.cpuNextShot = (self.cpuNextShot[0] + 1, self.cpuNextShot[1])
+                    elif self.cpuTry == 1:
+                        self.cpuNextShot = (self.cpuNextShot[0] - 1, self.cpuNextShot[1])
+                    elif self.cpuTry == 2:
+                        self.cpuNextShot = (self.cpuNextShot[0], self.cpuNextShot[1] + 1)
+                    else:
+                        self.cpuNextShot = (self.cpuNextShot[0], self.cpuNextShot[1] - 1)
+                    self.cpuHit = False
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.':
+                        return self.cpuNextShot
+                    else:
+                        self.cpuTry += 1
+                        continue
+                elif self.cpuNextShot != None and self.cpuHit == False:
+                    if self.cpuTry == 0:
+                        self.cpuNextShot = (self.cpuShotHit[0] + 1, self.cpuShotHit[1])
+                    elif self.cpuTry == 1:
+                        self.cpuNextShot = (self.cpuShotHit[0] - 1, self.cpuShotHit[1])
+                    elif self.cpuTry == 2:
+                        self.cpuNextShot = (self.cpuShotHit[0], self.cpuShotHit[1] + 1)
+                    else:
+                        self.cpuNextShot = (self.cpuShotHit[0], self.cpuShotHit[1] - 1)
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.':
+                        return self.cpuNextShot
+                    else:
+                        self.cpuTry += 1
+                        continue
+            else:
+                print("something went wrong, Chase fix it now!")
+
         else:
             for ship_num, ship_data in self.placements.items(): # Iterates keys and items in class stored ship locations
                 ship_coordinates = self.get_ship_coordinates(ship_num) # Stores a list of coordinates for a single ship
@@ -234,6 +294,11 @@ class Board:
                     for row, col in ship_coordinates:
                         self.grid[row][col] = 'D'
                         self.shotGrid[row][col] = 'D'
+                    self.cpuNextShot = None
+                    self.cpuLastShot = None
+                    self.cpuShotHit = None
+                    self.cpuTry = 0
+                    self.cpuHit = False
                 return
     
     # This function is authored by Team Member: Daniel Bobadilla & ChatGPT
