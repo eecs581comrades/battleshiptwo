@@ -26,21 +26,32 @@ def get_shot():
             if col_letter == "N": #Nuke
                 explode.main()
             elif col_letter == "M": #Carpet Bomb
+                print("Carpet Bomb activated")
                 rowCol = input("Enter the column letter or row number to bomb: ")
                 if rowCol.isdigit():
                     row = int(rowCol)-1
                     if row < 0 or row >= 10:
                         print("Invalid row/column. Try again.")
                     else:
-                        print("Carpet Bomb activated")
                         return [row,row,row,row,row,row,row,row,row,row], [0,1,2,3,4,5,6,7,8,9]
                 else:
                     col = let_to_num.get(rowCol.upper(), -1)
                     if col == -1:
                         print("Invalid row/column. Try again.")
                     else:
-                        print("Carpet Bomb activated")
                         return [0,1,2,3,4,5,6,7,8,9], [col,col,col,col,col,col,col,col,col,col]
+            elif col_letter == "K": #Air Strike
+                print("Air Strike requested")
+                row = int(input("Enter the row number corrdinate to bomb: "))-1
+                col = let_to_num.get(input("Enter the column letter corrdinate to bomb: ").upper(), -1)
+                if col == -1 or row < 0 or row >= 10:
+                    print("Invalid row/column. Try again.")
+                else:
+                    rows =[(row-1), row, (row+1)]
+                    cols = [(col-1), col, (col+1)]
+                    print (rows)
+                    print (cols)
+                    return [row, row, row, row+1, row-1], [col, col+1, col-1, col, col]
             
             #Error checking for validity in location
             if col == -1 or row < 0 or row >= 10:
@@ -101,11 +112,14 @@ def twoplayer():
             row, col = get_shot() #Gets the shot
             clearScreen()
             if isinstance(row, list): #checks if list for carpet bomb
-                for i in row:
-                    for j in col:
-                        hit = board2.take_shot(row[i], col[j])
+                while (len(row) > 0):
+                    if (row[0] < 0 or row[0] >= 10 or col[0] < 0 or col[0] >= 10) == False:
+                        print(row)
+                        hit = board2.take_shot(row[0], col[0])
                         if (checkEnd(hit)):
                             break
+                    row.pop(0)
+                    col.pop(0)
                 clearScreen()#removes all print statment from firing a line
             else:
                 hit = board2.take_shot(row, col)
@@ -118,11 +132,14 @@ def twoplayer():
             row, col = get_shot() #Gets the shot
             clearScreen()
             if isinstance(row, list): #checks if list for carpet bomb
-                for i in row:
-                    for j in col:
-                        hit = board1.take_shot(row[i], col[j])
+                while (len(row) > 0):
+                    if (row[0] < 0 or row[0] >= 10 or col[0] < 0 or col[0] >= 10) == False:
+                        print(row)
+                        hit = board1.take_shot(row[0], col[0])
                         if (checkEnd(hit)):
                             break
+                    row.pop(0)
+                    col.pop(0)  
                 clearScreen()#removes all print statment from firing a line
             else:
                 hit = board1.take_shot(row, col)
@@ -161,9 +178,12 @@ def oneplayer():
         
         row, col = get_shot() #Gets the shot
         if isinstance(row, list): #checks if list for carpet bomb
-            for i in row:
-                for j in col:
-                    hit = cpuBoard.take_shot(row[i], col[j])
+            while (len(row) > 0):
+                if (row[0] < 0 or row[0] >= 10 or col[0] < 0 or col[0] >= 10) == False:
+                    print(row)
+                    hit = cpuBoard.take_shot(row[0], col[0])
+                row.pop(0)
+                col.pop(0)
         else:
             hit = cpuBoard.take_shot(row, col)
             
