@@ -1,10 +1,13 @@
-Katie updated 9-23-24 9:07pm
+Katie updated 9-24-24 8:26am
 
 Needs Implemented:
--Airstrike: Choose center for 4 other adjacent spots to be fired
 -Scattershot: Choose center of 3x3 area for 3 random spots to fire at
 -Sonar: Shows opponents nearby ships
 
 Debug:
--If player tries to hit same spot twice it doesn't stop them, it allows next player's turn
 -Medium AI Chase has two possible cases to sort out: Ships next to each other and out of range
+^He hasn't merged MediumAI to the main branch yet
+
+Now a Features (Don't fix):
+-If player tries to hit same spot twice it doesn't stop them, it allows next player's turn
+^the special shots rely on this "feature"... should've paid attention to where you already shot, this is war!
