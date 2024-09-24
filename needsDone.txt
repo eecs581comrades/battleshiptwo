@@ -1,7 +1,6 @@
-Katie wrote 9-23-24 4:38pm
+Katie updated 9-23-24 9:07pm
 
 Needs Implemented:
--Carpet Bomb: Explode whole row or column
 -Airstrike: Choose center for 4 other adjacent spots to be fired
 -Scattershot: Choose center of 3x3 area for 3 random spots to fire at
 -Sonar: Shows opponents nearby ships

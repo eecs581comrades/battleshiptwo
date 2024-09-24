@@ -13,6 +13,7 @@ from scripts import explode
 #Dictionary can be used as a global var to map chars to ints
 let_to_num = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
 
+
 #Get_Shot gets the coordinates from each player as a target for their shot
 def get_shot():
     while True:
@@ -22,8 +23,24 @@ def get_shot():
             col_letter = input("Enter column letter (A-J): ").upper() #Column input
             col = let_to_num.get(col_letter, -1) #Conversion
 
-            if col_letter == "N":
+            if col_letter == "N": #Nuke
                 explode.main()
+            elif col_letter == "M": #Carpet Bomb
+                rowCol = input("Enter the column letter or row number to bomb: ")
+                if rowCol.isdigit():
+                    row = int(rowCol)-1
+                    if row < 0 or row >= 10:
+                        print("Invalid row/column. Try again.")
+                    else:
+                        print("Carpet Bomb activated")
+                        return [row,row,row,row,row,row,row,row,row,row], [0,1,2,3,4,5,6,7,8,9]
+                else:
+                    col = let_to_num.get(rowCol.upper(), -1)
+                    if col == -1:
+                        print("Invalid row/column. Try again.")
+                    else:
+                        print("Carpet Bomb activated")
+                        return [0,1,2,3,4,5,6,7,8,9], [col,col,col,col,col,col,col,col,col,col]
             
             #Error checking for validity in location
             if col == -1 or row < 0 or row >= 10:
@@ -80,20 +97,39 @@ def twoplayer():
         
         while (True):
             printBoard(board1, board2)
+            
             row, col = get_shot() #Gets the shot
-            hit = board2.take_shot(row, col) #Takes the shot
             clearScreen()
-            if (checkEnd(hit)):
-                break
+            if isinstance(row, list): #checks if list for carpet bomb
+                for i in row:
+                    for j in col:
+                        hit = board2.take_shot(row[i], col[j])
+                        if (checkEnd(hit)):
+                            break
+                clearScreen()#removes all print statment from firing a line
+            else:
+                hit = board2.take_shot(row, col)
+                if (checkEnd(hit)):
+                    break
+
             _ = input("Click Enter when Player 2 has the computer!")
             printBoard(board2, board1)
+
             row, col = get_shot() #Gets the shot
-            hit = board1.take_shot(row, col) #Takes the shot
             clearScreen()
-            if (checkEnd(hit)):
-                break
+            if isinstance(row, list): #checks if list for carpet bomb
+                for i in row:
+                    for j in col:
+                        hit = board1.take_shot(row[i], col[j])
+                        if (checkEnd(hit)):
+                            break
+                clearScreen()#removes all print statment from firing a line
+            else:
+                hit = board1.take_shot(row, col)
+                if (checkEnd(hit)):
+                        break
+            
             _ = input("Click Enter when Player 1 has the computer!")
-            clearScreen()
 
 def oneplayer():
     diff = ''
@@ -122,8 +158,15 @@ def oneplayer():
 
     while True:
         printBoard(playerBoard, cpuBoard)
+        
         row, col = get_shot() #Gets the shot
-        hit = cpuBoard.take_shot(row, col)
+        if isinstance(row, list): #checks if list for carpet bomb
+            for i in row:
+                for j in col:
+                    hit = cpuBoard.take_shot(row[i], col[j])
+        else:
+            hit = cpuBoard.take_shot(row, col)
+            
         clearScreen()
         if cpuBoard.has_lost():
             print("You win!")
