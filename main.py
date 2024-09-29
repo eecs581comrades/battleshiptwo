@@ -13,46 +13,41 @@ from scripts import explode
 #Dictionary can be used as a global var to map chars to ints
 let_to_num = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
 
+special_shots_limits = {
+    "nuke": 3, 
+    "carpet_bomb": 3,
+    "air_strike": 3
+}
 
 #Get_Shot gets the coordinates from each player as a target for their shot
 def get_shot():
     while True:
         try:
+            special_shot = input(" To use special shots (N for Nuke, C for Carpet Bomb, A for Air Strike, and any other keys for standard shot): ").upper()
+
+            if special_shot == "N": #Nuke
+                if special_shots_limits["nuke"] > 0:
+                    special_shots_limits["nuke"] -= 1
+                    return nuke()
+                else:
+                    print("All shots used")
+            elif special_shot == "C": #Carpet Bomb
+                if special_shots_limits["carpet_bomb"] > 0:
+                    special_shots_limits["carpet_bomb"] -= 1
+                    return carpet_bomb()
+                else:
+                    print("All shots used")
+            elif special_shot == "A": #Air Strike
+                if special_shots_limits["air_strike"] > 0:
+                    special_shots_limits["air_strike"] -= 1
+                    return air_strike()
+                else:
+                    print("All shots used")
+            
             #Gets user input for each required field
             row = int(input("Enter row number! (1-10): ")) - 1 #Row input
             col_letter = input("Enter column letter (A-J): ").upper() #Column input
             col = let_to_num.get(col_letter, -1) #Conversion
-
-            if col_letter == "N": #Nuke
-                explode.main()
-            elif col_letter == "M": #Carpet Bomb
-                print("Carpet Bomb activated")
-                rowCol = input("Enter the column letter or row number to bomb: ")
-                if rowCol.isdigit():
-                    row = int(rowCol)-1
-                    if row < 0 or row >= 10:
-                        print("Invalid row/column. Try again.")
-                    else:
-                        return [row,row,row,row,row,row,row,row,row,row], [0,1,2,3,4,5,6,7,8,9]
-                else:
-                    col = let_to_num.get(rowCol.upper(), -1)
-                    if col == -1:
-                        print("Invalid row/column. Try again.")
-                    else:
-                        return [0,1,2,3,4,5,6,7,8,9], [col,col,col,col,col,col,col,col,col,col]
-            elif col_letter == "K": #Air Strike
-                print("Air Strike requested")
-                row = int(input("Enter the row number corrdinate to bomb: "))-1
-                col = let_to_num.get(input("Enter the column letter corrdinate to bomb: ").upper(), -1)
-                if col == -1 or row < 0 or row >= 10:
-                    print("Invalid row/column. Try again.")
-                else:
-                    rows =[(row-1), row, (row+1)]
-                    cols = [(col-1), col, (col+1)]
-                    print (rows)
-                    print (cols)
-                    return [row, row, row, row+1, row-1], [col, col+1, col-1, col, col]
-            
             #Error checking for validity in location
             if col == -1 or row < 0 or row >= 10:
                 print("Invalid row/column. Try again.")
@@ -62,7 +57,41 @@ def get_shot():
         #Error checking for validity for input
         except ValueError:
             print("Invalid input. Please try again.")
-            
+
+def nuke():
+    print("Nuke activated")
+    explode.main()
+    return None
+
+def carpet_bomb():
+    print("Carpet Bomb activated")
+    rowCol = input("Enter the column letter or row number to bomb: ")
+    if rowCol.isdigit():
+        row = int(rowCol)-1
+        if row < 0 or row >= 10:
+            print("Invalid row/column. Try again.")
+        else:
+            return [row,row,row,row,row,row,row,row,row,row], [0,1,2,3,4,5,6,7,8,9]
+    else:
+        col = let_to_num.get(rowCol.upper(), -1)
+        if col == -1:
+            print("Invalid row/column. Try again.")
+        else:
+            return [0,1,2,3,4,5,6,7,8,9], [col,col,col,col,col,col,col,col,col,col]
+
+def air_strike():
+    print("Air Strike requested")
+    row = int(input("Enter the row number coordinate to bomb: "))-1
+    col = let_to_num.get(input("Enter the column letter coordinate to bomb: ").upper(), -1)
+    if col == -1 or row < 0 or row >= 10:
+        print("Invalid row/column. Try again.")
+    else:
+        rows =[(row-1), row, (row+1)]
+        cols = [(col-1), col, (col+1)]
+        print (rows)
+        print (cols)
+        return [row, row, row, row+1, row-1], [col, col+1, col-1, col, col]
+    
 def printBoard(board, oppoboard):
             clearScreen()
             print("Opponent's Board")
@@ -206,7 +235,7 @@ def oneplayer():
 #Main function of our program, handles the game setup, as well as the gameplay between each user
 def main():
     while True:
-        players = input("1 or 2 Players?")
+        players = input("1 or 2 Players?: ")
         if players.lower() == "1" or players.lower() == "one":
             oneplayer()
             break
