@@ -152,8 +152,8 @@ def twoplayer():
                 clearScreen()#removes all print statment from firing a line
             else:
                 hit = board2.take_shot(row, col)
-                if (checkEnd(hit)):
-                    break
+            if (checkEnd(hit)):
+                break
 
             _ = input("Click Enter when Player 2 has the computer!")
             printBoard(board2, board1)
@@ -172,8 +172,8 @@ def twoplayer():
                 clearScreen()#removes all print statment from firing a line
             else:
                 hit = board1.take_shot(row, col)
-                if (checkEnd(hit)):
-                        break
+            if (checkEnd(hit)):
+                break
             
             _ = input("Click Enter when Player 1 has the computer!")
 
