@@ -9,6 +9,7 @@
 
 from board import Board, clearScreen
 from scripts import explode
+import random
 
 #Dictionary can be used as a global var to map chars to ints
 let_to_num = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
@@ -16,14 +17,15 @@ let_to_num = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I
 special_shots_limits = {
     "nuke": 3, 
     "carpet_bomb": 3,
-    "air_strike": 3
+    "air_strike": 3,
+    "scatter_shot" : 3
 }
 
 #Get_Shot gets the coordinates from each player as a target for their shot
 def get_shot():
     while True:
         try:
-            special_shot = input(" To use special shots (N for Nuke, C for Carpet Bomb, A for Air Strike, and any other keys for standard shot): ").upper()
+            special_shot = input(" To use special shots (N for Nuke, C for Carpet Bomb, A for Air Strike, S for Scatter Shot, and any other keys for standard shot): ").upper()
 
             if special_shot == "N": #Nuke
                 if special_shots_limits["nuke"] > 0:
@@ -41,6 +43,12 @@ def get_shot():
                 if special_shots_limits["air_strike"] > 0:
                     special_shots_limits["air_strike"] -= 1
                     return air_strike()
+                else:
+                    print("All shots used")
+            elif special_shot == "S": #Air Strike
+                if special_shots_limits["scatter_shot"] > 0:
+                    special_shots_limits["scatter_shot"] -= 1
+                    return scatter_shot()
                 else:
                     print("All shots used")
             
@@ -91,6 +99,30 @@ def air_strike():
         print (rows)
         print (cols)
         return [row, row, row, row+1, row-1], [col, col+1, col-1, col, col]
+
+def scatter_shot():
+    print("Scatter Shot")
+    row = int(input("Enter the row number corrdinate to bomb: "))-1
+    col = let_to_num.get(input("Enter the column letter coordinate to bomb: ").upper(), -1)
+    if col == -1 or row < 0 or row >= 10:
+        print("Invalid row/column. Try again.")
+    else:
+        ranR1 = random.randint(-1,1)
+        ranR2 = random.randint(-1,1)
+        ranR3 = random.randint(-1,1)
+        ranC1 = random.randint(-1,1)
+        ranC2 = random.randint(-1,1)
+        ranC3 = random.randint(-1,1)
+        while ((ranR1,ranC1) == (ranR2,ranC2)) or ((ranR1,ranC1) == (ranR3,ranC3)) or ((ranR3,ranC3) == (ranR2,ranC2)):
+            ranR2 = random.randint(-1,1)
+            ranR3 = random.randint(-1,1)
+            ranC2 = random.randint(-1,1)
+            ranC3 = random.randint(-1,1)
+                        
+        cols = [col+ranC1, col+ranC2, col+ranC3]
+        rows =[row+ranR1, row+ranR2, row+ranR3]
+        return rows, cols
+
     
 def printBoard(board, oppoboard):
             clearScreen()
