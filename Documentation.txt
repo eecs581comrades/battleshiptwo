@@ -18,4 +18,5 @@ Emily's time:
 	9-19-24: 1 Individual hours
 	9-20-24: 0.75 Group hours
 	9-22-24: 1 Individual hours
-	Total: 4 hours
+	9-23-24: 1 Group hour
+	Total: 5 hours
