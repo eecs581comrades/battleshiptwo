@@ -112,6 +112,8 @@ def main():
 
     new_process = subprocess.Popen(["python", "./scripts/shatter_explode.py"])
 
+    sys.exit()
+
 # If the script is run directly, execute main()
 if __name__ == "__main__":
     main()
