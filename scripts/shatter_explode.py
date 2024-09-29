@@ -17,7 +17,7 @@ def get_bsod_image():
 
 def play_explosion_sound():
     # Play explosion sound effect
-    explosion_sound = pygame.mixer.Sound("./scripts/explosion.mp3")
+    explosion_sound = pygame.mixer.Sound("./scripts/explosion.wav")
     explosion_sound.play()
 
 def shutdown_system():
