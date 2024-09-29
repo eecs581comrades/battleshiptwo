@@ -19,8 +19,18 @@ Emily's time:
 	9-20-24: 0.75 Group hours
 	9-22-24: 1 Individual hours
 	9-23-24: 1 Group hour
-	9-29-24: 2 Group hours
+  9-29-24: 2 Group hours
 	Total: 7 hours
+
+Chase's Time:
+	9-16-24: 0.25 Group hours after GTA meeting for Proj 1 
+	9-18-24: 3 Group hours
+	9-19-24: 3 Individual Hours
+	9-20-24: 0.75 Group Hours and 1 Individual Hour
+	9-23-24: 1 Group hour after GTA meeting for Proj 2
+	9-27-24: 1 Individual Hour
+	9-29-24: 2 Group Hours
+	Total: 11
 
 Wil's Time:
 	9-16-24: 0.25 Group hours
