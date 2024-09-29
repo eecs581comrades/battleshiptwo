@@ -61,8 +61,14 @@ def shatter_and_explode(image_path):
     pieces = []
     for y in range(0, screen_height, piece_size):
         for x in range(0, screen_width, piece_size):
-            piece = image.subsurface((x, y, piece_size, piece_size))
-            pieces.append([piece, pygame.Rect(x, y, piece_size, piece_size), [random.uniform(-3, 3), random.uniform(-3, 3)]])
+            # Calculate the width and height for the subsurface
+            piece_width = min(piece_size, screen_width - x)
+            piece_height = min(piece_size, screen_height - y)
+            
+            # Create the subsurface with the calculated width and height
+            piece = image.subsurface((x, y, piece_width, piece_height))
+            pieces.append([piece, pygame.Rect(x, y, piece_width, piece_height), [random.uniform(-3, 3), random.uniform(-3, 3)]])
+
 
     clock = pygame.time.Clock()
     exploded = False
