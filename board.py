@@ -1,4 +1,4 @@
-#Battleship Main File
+#Battleship Board File
 #This file contains the board game initialization, hit mechanics, and board displays for the game battleship
 #No inputs or outputs
 #Proj 1 Authors: Aiden Murphy, Jack Doughty, Jack Pigott, Vy Luu, Daniel Bobadilla
