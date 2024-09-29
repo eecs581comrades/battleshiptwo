@@ -210,16 +210,24 @@ class Board:
         elif (dif == 'medium'):
             while True:
                 if self.cpuNextShot == None and self.cpuHit == False:
-                    self.cpuLastShot = (random.randint(0,9), random.randint(0,9))
-                    if self.shotGrid[self.cpuLastShot[0]][self.cpuLastShot[1]] == '.':
-                        return self.cpuLastShot
-                    else:
-                        continue
+                    shotCheck = False
+                    for i in range(0,9):
+                        for j in range(0,9):
+                            if self.shotGrid[i][j] == 'H':
+                                self.cpuLastShot = (i, j)
+                                self.cpuHit = True
+                                shotCheck = True
+                    if shotCheck == False:
+                        self.cpuLastShot = (random.randint(0,9), random.randint(0,9))
+                        if self.shotGrid[self.cpuLastShot[0]][self.cpuLastShot[1]] == '.':
+                            return self.cpuLastShot
+                        else:
+                            continue
                 elif self.cpuNextShot == None and self.cpuHit == True:
                     self.cpuShotHit = self.cpuLastShot
                     self.cpuHit = False
                     self.cpuNextShot = (self.cpuLastShot[0] + 1, self.cpuLastShot[1])
-                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.':
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.' and self.cpuNextShot[0] < 10:
                         return self.cpuNextShot
                     else:
                         continue
@@ -233,8 +241,11 @@ class Board:
                     else:
                         self.cpuNextShot = (self.cpuNextShot[0], self.cpuNextShot[1] - 1)
                     self.cpuHit = False
-                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.':
-                        return self.cpuNextShot
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.' and self.cpuNextShot[0] < 10 and self.cpuNextShot[1] < 10 and self.cpuNextShot[0] >= 0 and self.cpuNextShot[1] >= 0:
+                        if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == 'H':
+                            continue
+                        else:
+                            return self.cpuNextShot
                     else:
                         self.cpuTry += 1
                         continue
@@ -247,7 +258,7 @@ class Board:
                         self.cpuNextShot = (self.cpuShotHit[0], self.cpuShotHit[1] + 1)
                     else:
                         self.cpuNextShot = (self.cpuShotHit[0], self.cpuShotHit[1] - 1)
-                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.':
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.' and self.cpuNextShot[0] < 10 and self.cpuNextShot[1] < 10 and self.cpuNextShot[0] >= 0 and self.cpuNextShot[1] >= 0:
                         return self.cpuNextShot
                     else:
                         self.cpuTry += 1
@@ -297,8 +308,10 @@ class Board:
                         self.shotGrid[row][col] = 'D'
                     self.cpuNextShot = None
                     self.cpuLastShot = None
-                    self.cpuShotHit = None
-                    self.cpuTry = 0
+                    if self.cpuShotHit != None:
+                        if self.shotGrid[self.cpuShotHit[0]][self.cpuShotHit[1]] == 'D':
+                            self.cpuShotHit = None
+                            self.cpuTry = 0
                     self.cpuHit = False
                 return
     
