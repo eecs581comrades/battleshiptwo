@@ -11,7 +11,7 @@ from colorama import Fore, Back, Style, init
 import os
 import random
 
-def clearScreen():
+def clearScreen():#resets the terminal display
     if os.name == 'nt':
         _ = os.system('cls')
     else:
@@ -270,10 +270,7 @@ class Board:
                 ship_coordinates = self.get_ship_coordinates(ship_num) # Stores a list of coordinates for a single ship
                 for (row, col) in ship_coordinates: # checks if the shot from the opponent matches any of the coordinates from the ships coordinates
                     if ship_data['Ship Health'] != 0: # If statement checks if the ship no longer has any health
-                        print (self.shotGrid[row][col])
                         if (self.shotGrid[row][col] == '.'):  
-                            print(row)
-                            print(col)
                             return ((row, col))
                         else:
                             print ("try next spot")
