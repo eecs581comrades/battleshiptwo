@@ -47,7 +47,7 @@ class Board:
                 elif cell == 'D':
                     print(Back.RED + '🟥', end='  ') # RED emoji for dead ship
                 elif cell == '.':
-                    print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
+                    print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty    
                 else:
                     print(Back.WHITE + '⬜', end='  ')  # White square for misses
             print()  # Newline for the next row
@@ -65,6 +65,8 @@ class Board:
                     print(Back.RED + '🟥', end='  ')
                 elif cell == '.':
                     print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
+                elif cell == 'R':
+                    print(Back.RED + '🟩', end='  ') #Green emoji for Sonar scanned
                 else:
                     print(Back.WHITE + '⬜', end='  ')  # White square for misses
             print()  # Newline for the next row
@@ -175,6 +177,27 @@ class Board:
             clearScreen()
             self.showBoard()  #Show the new board
             ship_num += 1
+
+    def sonarScan(self, row, col): #Scans the board for ships
+        #sets parameters of 3x3 scan
+        rowStart = row - 1
+        rowEnd = row + 1
+        colStart = col - 1
+        colEnd = col + 1
+        #checks if the scan is off the board
+        if rowStart < 0: 
+            rowStart = row
+        if rowEnd > 9:
+            rowEnd = row
+        if colStart < 0:
+            colStart = col
+        if colEnd > 9:
+            colEnd = col
+        #Scans the 3x3 area for ships
+        for i in range(rowStart, rowEnd + 1):
+            for j in range(colStart, colEnd + 1):
+                if self.grid[i][j] == 'S': #Checks if the spot is a ship
+                    self.shotGrid[i][j] = 'R' #Marks the spot as a ship
         
     def take_shot(self, row, col): #Updates the board for hits and misses
         if self.grid[row][col] == 'S': #Ships
