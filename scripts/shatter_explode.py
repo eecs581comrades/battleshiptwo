@@ -1,3 +1,10 @@
+#Explosion Animation Script for Windows
+#This file makes the terminal explode for the nuke shot.
+#No inputs or outputs
+#Proj 2 Authors: William Johnson
+#Proj 2 Supplemental help from ChatGPT and StackOverflow
+#Creation Date: 09-29-2024
+
 import pygame
 import random
 import platform
@@ -57,7 +64,7 @@ def shatter_and_explode(image_path):
     flash_alpha = 255  # Set the initial opacity for the white flash
 
     # Break the image into pieces (grid)
-    piece_size = 10  # size of each piece
+    piece_size = 8  # size of each piece
     pieces = []
     for y in range(0, screen_height, piece_size):
         for x in range(0, screen_width, piece_size):
