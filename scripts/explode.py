@@ -1,3 +1,10 @@
+#Explosion Initialization Script
+#This file makes the terminal explode for the nuke shot.
+#No inputs or outputs
+#Proj 2 Authors: William Johnson
+#Proj 2 Supplemental help from ChatGPT and StackOverflow
+#Creation Date: 09-29-2024
+
 import os
 import subprocess
 import pygame
