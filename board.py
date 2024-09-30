@@ -1,4 +1,4 @@
-#Battleship Main File
+#Battleship Board File
 #This file contains the board game initialization, hit mechanics, and board displays for the game battleship
 #No inputs or outputs
 #Proj 1 Authors: Aiden Murphy, Jack Doughty, Jack Pigott, Vy Luu, Daniel Bobadilla
@@ -11,7 +11,7 @@ from colorama import Fore, Back, Style, init
 import os
 import random
 
-def clearScreen():
+def clearScreen():#resets the terminal display
     if os.name == 'nt':
         _ = os.system('cls')
     else:
@@ -28,6 +28,11 @@ class Board:
         self.shotGrid = [['.' for _ in range(self.size)] for _ in range(self.size)]
         self.hits = 0
         self.placements = {}  #Stores user ship placements to track existing ships\
+        self.cpuNextShot = None #Stores the CPU's next shot
+        self.cpuLastShot = None #Stores CPU's previous attempt(In case of a hit")
+        self.cpuShotHit = None #Stores the hit from CPU
+        self.cpuTry = 0 #Stores CPU's attempt at shooting after hit
+        self.cpuHit = False #Stores if CPU hit player in previous shot
 
     def showBoard(self):
         """Prints the board with emojis and colored backgrounds for different states."""
@@ -42,7 +47,7 @@ class Board:
                 elif cell == 'D':
                     print(Back.RED + '🟥', end='  ') # RED emoji for dead ship
                 elif cell == '.':
-                    print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
+                    print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty    
                 else:
                     print(Back.WHITE + '⬜', end='  ')  # White square for misses
             print()  # Newline for the next row
@@ -60,6 +65,8 @@ class Board:
                     print(Back.RED + '🟥', end='  ')
                 elif cell == '.':
                     print(Back.BLUE + '🟦', end='  ')  # BLUE emoji for water/empty
+                elif cell == 'R':
+                    print(Back.RED + '🟩', end='  ') #Green emoji for Sonar scanned
                 else:
                     print(Back.WHITE + '⬜', end='  ')  # White square for misses
             print()  # Newline for the next row
@@ -128,9 +135,10 @@ class Board:
                         print("Invalid row/column. Try again.")
                         continue 
                     #orientation = input("Enter orientation (H for Horizontal, V for Vertical): ").upper() #Direction for ship placement
-                    orientation = random.randint(0,1)
+                    orientation_choice = random.randint(0,1)
+                    orientation = "H" if orientation_choice == 0 else "V"
                     
-                    if orientation == 0: #Ship setup checks
+                    if orientation == "H": #Ship setup checks
                         print(row_num)
                         print(column_number)
                         if column_number + ship_num > self.size: #Size Check
@@ -143,7 +151,7 @@ class Board:
                         for j in range(ship_num): #Placement of the ship!
                             self.grid[row_num][column_number + j] = 'S'#Placement of the ship!
 
-                    elif orientation == 1: #Ship setup checks
+                    elif orientation == "V": #Ship setup checks
                         print(row_num)
                         print(column_number)
                         if row_num + ship_num > self.size: #Size Check
@@ -169,40 +177,123 @@ class Board:
             clearScreen()
             self.showBoard()  #Show the new board
             ship_num += 1
-        
 
+    def sonarScan(self, row, col): #Scans the board for ships
+        #sets parameters of 3x3 scan
+        rowStart = row - 1
+        rowEnd = row + 1
+        colStart = col - 1
+        colEnd = col + 1
+        #checks if the scan is off the board
+        if rowStart < 0: 
+            rowStart = row
+        if rowEnd > 9:
+            rowEnd = row
+        if colStart < 0:
+            colStart = col
+        if colEnd > 9:
+            colEnd = col
+        #Scans the 3x3 area for ships
+        for i in range(rowStart, rowEnd + 1):
+            for j in range(colStart, colEnd + 1):
+                if self.grid[i][j] == 'S': #Checks if the spot is a ship
+                    self.shotGrid[i][j] = 'R' #Marks the spot as a ship
+        
     def take_shot(self, row, col): #Updates the board for hits and misses
         if self.grid[row][col] == 'S': #Ships
             print("Hit!")
             self.grid[row][col] = 'H' #Hits
             self.shotGrid[row][col] = 'H'
             self.hits += 1
+            self.cpuHit = True #CPU hit a spot
             self.hitShip(row, col) #Updates the health of the ship that was hit and if ship health is zero announces it
             return True
         elif self.grid[row][col] == '.': #Empty
             print("Miss!")
             self.grid[row][col] = 'M'
             self.shotGrid[row][col] = 'M'  #Misses
+            if self.cpuShotHit != None: #Checks if this was an attempt after a shot was hit by CPU
+                self.cpuTry += 1 #Increments by 1 to try another spot by the hit spot
             return False
         else:
             print("Already targeted this spot. Try again.")
-    
+
+    # CPU shot function to collect a shot to be made by the CPU based on player specified difficulty
     def cpuTakeShot(self, dif):
-        ### TO BE IMPLEMENTED
-        # FOR CPU: SHOOTS SHIPS DEPENDING ON DIFFICULTY
-        if (dif == 'easy'):
-            pass
-        elif (dif == 'medium'):
-            pass
-        else:
+        if (dif == 'easy'): #Easy mode shot for CPU
+            while True:
+                row = random.randint(0,9) #Takes random row number
+                col = random.randint(0,9) #Takes random column number
+                if self.shotGrid[row][col] == '.': #Checks if spot was previously shot at
+                    return (row, col) #Shoot the shot
+                else: #Try again for different shot
+                    continue
+        elif (dif == 'medium'): #Medium mode shot for CPU
+            while True:
+                if self.cpuNextShot == None and self.cpuHit == False: #No previous hit or shot
+                    shotCheck = False #A temp shot check to check for hits not in a row
+                    for i in range(0,9):
+                        for j in range(0,9):
+                            if self.shotGrid[i][j] == 'H': #checks if spot was hit
+                                self.cpuLastShot = (i, j) #Spot was hit, so new spot to shoot around
+                                self.cpuHit = True #Claim a shot was hit
+                                shotCheck = True #Spot was hit
+                    if shotCheck == False: #No previous spots hit that need to be checked
+                        self.cpuLastShot = (random.randint(0,9), random.randint(0,9)) #generates random shot
+                        if self.shotGrid[self.cpuLastShot[0]][self.cpuLastShot[1]] == '.': #checks if spot was already shot
+                            return self.cpuLastShot #shoot the shot
+                        else: #try again for a different shot
+                            continue
+                elif self.cpuNextShot == None and self.cpuHit == True: #the previous shot was a hit or there was a hit that needs checked
+                    self.cpuShotHit = self.cpuLastShot #stores last shot attempted as spot that was hit
+                    self.cpuHit = False #default the hit for next attempt
+                    self.cpuNextShot = (self.cpuLastShot[0] + 1, self.cpuLastShot[1]) #Setup next shot
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == '.' and self.cpuNextShot[0] < 10: #checks if shot is on the board or shot already
+                        return self.cpuNextShot #shoot the shot
+                    else: #Shot is not on the board or was shot already
+                        continue
+                elif self.cpuNextShot != None and self.cpuHit == True: #A shot after a first hit on ship was hit
+                    #Shot is incremented by 1 in direction of which the shot hit to continue to sink ship
+                    if self.cpuTry == 0: 
+                        self.cpuNextShot = (self.cpuNextShot[0] + 1, self.cpuNextShot[1])
+                    elif self.cpuTry == 1:
+                        self.cpuNextShot = (self.cpuNextShot[0] - 1, self.cpuNextShot[1])
+                    elif self.cpuTry == 2:
+                        self.cpuNextShot = (self.cpuNextShot[0], self.cpuNextShot[1] + 1)
+                    else:
+                        self.cpuNextShot = (self.cpuNextShot[0], self.cpuNextShot[1] - 1)
+                    self.cpuHit = False #default the hit for next attempt
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] != 'D' and self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] != 'M' and self.cpuNextShot[0] < 10 and self.cpuNextShot[1] < 10 and self.cpuNextShot[0] >= 0 and self.cpuNextShot[1] >= 0: #check if shot was missed, sunk, or off the board
+                        if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == 'H': #checks if the next shot was a hit to skip over to the next spot available
+                            continue
+                        else: 
+                            return self.cpuNextShot #shoot the shot
+                    else: #shot was made or off the board. Increment the cpu.try to shoot a different spot and try again
+                        self.cpuTry += 1
+                        continue
+                elif self.cpuNextShot != None and self.cpuHit == False:
+                    if self.cpuTry == 0:
+                        self.cpuNextShot = (self.cpuShotHit[0] + 1, self.cpuShotHit[1])
+                    elif self.cpuTry == 1:
+                        self.cpuNextShot = (self.cpuShotHit[0] - 1, self.cpuShotHit[1])
+                    elif self.cpuTry == 2:
+                        self.cpuNextShot = (self.cpuShotHit[0], self.cpuShotHit[1] + 1)
+                    else:
+                        self.cpuNextShot = (self.cpuShotHit[0], self.cpuShotHit[1] - 1)
+                    if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] != 'D' and self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] != 'M' and self.cpuNextShot[0] < 10 and self.cpuNextShot[1] < 10 and self.cpuNextShot[0] >= 0 and self.cpuNextShot[1] >= 0: #check if shot was missed, sunk, or off the board
+                        if self.shotGrid[self.cpuNextShot[0]][self.cpuNextShot[1]] == 'H': #checks if the next shot was a hit to skip over to the next spot available
+                            continue
+                        else: 
+                            return self.cpuNextShot #shoot the shot
+                    else: #shot was made or off the board. Increment the cpu.try to shoot a different spot and try again
+                        self.cpuTry += 1
+                        continue
+        else: #Hard mode shot for CPU
             for ship_num, ship_data in self.placements.items(): # Iterates keys and items in class stored ship locations
                 ship_coordinates = self.get_ship_coordinates(ship_num) # Stores a list of coordinates for a single ship
                 for (row, col) in ship_coordinates: # checks if the shot from the opponent matches any of the coordinates from the ships coordinates
                     if ship_data['Ship Health'] != 0: # If statement checks if the ship no longer has any health
-                        print (self.shotGrid[row][col])
                         if (self.shotGrid[row][col] == '.'):  
-                            print(row)
-                            print(col)
                             return ((row, col))
                         else:
                             print ("try next spot")
@@ -234,6 +325,13 @@ class Board:
                     for row, col in ship_coordinates:
                         self.grid[row][col] = 'D'
                         self.shotGrid[row][col] = 'D'
+                    self.cpuNextShot = None #resets CPU's next shot to default
+                    self.cpuLastShot = None #resets CPU's last shot to default
+                    if self.cpuShotHit != None: #Checks if the shot hit is None(For the sinking of the 1x1 ship)
+                        if self.shotGrid[self.cpuShotHit[0]][self.cpuShotHit[1]] == 'D': #Checks if the original shot that was hit is now sunk
+                            self.cpuShotHit = None #Shot was is sunk, so back to default
+                            self.cpuTry = 0 #shot attempts reset to default
+                    self.cpuHit = False #default the hit for next attempt
                 return
     
     # This function is authored by Team Member: Daniel Bobadilla & ChatGPT

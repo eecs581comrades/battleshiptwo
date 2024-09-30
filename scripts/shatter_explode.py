@@ -24,7 +24,7 @@ def get_bsod_image():
 
 def play_explosion_sound():
     # Play explosion sound effect
-    explosion_sound = pygame.mixer.Sound("./scripts/explosion.mp3")
+    explosion_sound = pygame.mixer.Sound("./scripts/explosion.wav")
     explosion_sound.play()
 
 def shutdown_system():
@@ -64,12 +64,18 @@ def shatter_and_explode(image_path):
     flash_alpha = 255  # Set the initial opacity for the white flash
 
     # Break the image into pieces (grid)
-    piece_size = 8  # size of each piece
+    piece_size = 30  # size of each piece
     pieces = []
     for y in range(0, screen_height, piece_size):
         for x in range(0, screen_width, piece_size):
-            piece = image.subsurface((x, y, piece_size, piece_size))
-            pieces.append([piece, pygame.Rect(x, y, piece_size, piece_size), [random.uniform(-3, 3), random.uniform(-3, 3)]])
+            # Calculate the width and height for the subsurface
+            piece_width = min(piece_size, screen_width - x)
+            piece_height = min(piece_size, screen_height - y)
+            
+            # Create the subsurface with the calculated width and height
+            piece = image.subsurface((x, y, piece_width, piece_height))
+            pieces.append([piece, pygame.Rect(x, y, piece_width, piece_height), [random.uniform(-3, 3), random.uniform(-3, 3)]])
+
 
     clock = pygame.time.Clock()
     exploded = False

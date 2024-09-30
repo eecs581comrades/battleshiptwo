@@ -119,6 +119,11 @@ def main():
 
     new_process = subprocess.Popen(["python", "./scripts/shatter_explode.py"])
 
+    
+    print("\n\nThe nuke killed all the ships. Game over. No one wins.")
+
+    sys.exit()
+
 # If the script is run directly, execute main()
 if __name__ == "__main__":
     main()
