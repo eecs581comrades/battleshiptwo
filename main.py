@@ -20,15 +20,16 @@ special_shots_limits = {
     "nuke": 1, 
     "carpet_bomb": 3,
     "air_strike": 3,
-    "scatter_shot" : 3
+    "scatter_shot" : 3,
+    "sonar" : 3
 }
 
 #Get_Shot gets the coordinates from each player as a target for their shot
-def get_shot():
+def get_shot(board):#Gets the shot from the user
     while True:
         try:
             #Gets what type of shot the user wants to fire
-            special_shot = input(" To use special shots (N for Nuke, C for Carpet Bomb, A for Air Strike, S for Scatter Shot, and any other keys for standard shot): ").upper()
+            special_shot = input(" To use special shots (N for Nuke, C for Carpet Bomb, A for Air Strike, S for Scatter Shot, R for Sonar Scan, and any other keys for standard shot): ").upper()
 
             if special_shot == "N": #Nuke
                 if special_shots_limits["nuke"] > 0:#Checks if all special shots have been used
@@ -52,6 +53,12 @@ def get_shot():
                 if special_shots_limits["scatter_shot"] > 0:#Checks if all special shots have been used
                     special_shots_limits["scatter_shot"] -= 1
                     return scatter_shot()#call firing function
+                else:
+                    print("All shots used")
+            elif special_shot == "R": #Sonar Scan
+                if special_shots_limits["sonar"] > 0:#Checks if all special shots have been used
+                    special_shots_limits["sonar"] -= 1
+                    return sonar(board)#call firing function
                 else:
                     print("All shots used")
             
@@ -130,6 +137,16 @@ def scatter_shot():#firing function for scatter shot
         rows =[row+ranR1, row+ranR2, row+ranR3]
         return rows, cols
 
+def sonar(board):#firing function for sonar
+    print("Sonar Scan requested")
+    row = int(input("Enter the row number of center coordinate to scan: "))-1 #Gets user's desired shot and formats input
+    col = let_to_num.get(input("Enter the column letter of center coordinate to scan: ").upper(), -1) #Gets user's desired shot and formats input
+    if col == -1 or row < 0 or row >= 10: #Checks valid input
+        print("Invalid row/column. Try again.")
+    else:
+        sonar = board.sonarScan(row, col)
+        #checks numbers within 3x3 range for rows and columns' center coordinates
+        return row, col
     
 def printBoard(board, oppoboard): #Prints the player and oponents board by calling functions and formatting titles
             clearScreen()
@@ -175,9 +192,10 @@ def twoplayer():
                 return False#Continues game
         
         while (True):#players take their shots
+            player = 1
             printBoard(board1, board2)
             
-            row, col = get_shot() #Gets the shot
+            row, col = get_shot(board2) #Gets the shot
             clearScreen()
             
             if isinstance(row, list): #checks if list is given for special shots
@@ -198,9 +216,10 @@ def twoplayer():
 
             #Switches for next user
             _ = input("Click Enter when Player 2 has the computer!")
+            player = 2
             printBoard(board2, board1)
 
-            row, col = get_shot() #Gets the shot
+            row, col = get_shot(board1) #Gets the shot
             clearScreen()
             if isinstance(row, list): #checks if list for special shots
                 while (len(row) > 0):#Goes through shot coordinates
@@ -251,7 +270,7 @@ def oneplayer():#Players plays against computer
     
     while True:#runs game
         printBoard(playerBoard, cpuBoard)#Shows boards to begin game
-        row, col = get_shot() #Gets the shot
+        row, col = get_shot(cpuBoard) #Gets the shot
         if isinstance(row, list): #checks if list for special shots
             while (len(row) > 0):#Goes through shot coordinates
                 if (row[0] < 0 or row[0] >= 10 or col[0] < 0 or col[0] >= 10) == False:#Checks valid shot
